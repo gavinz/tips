@@ -1,0 +1,17 @@
+# Generate the root key
+openssl genrsa -des3 -out root.key 2048
+
+# Make the root cert request
+openssl req -new -key root.key -out root.req
+
+# Make the root cert
+openssl x509 -req -days 3650 -sha256 -extensions v3_ca -signkey root.key -in root.req -out root.crt
+
+# Generate the server side key
+openssl genrsa -out server.key 2048
+
+# Make the server cert reqeust
+openssl req -new -key server.key -out server.req
+
+# Make the server cert
+openssl x509 -req -days 730 -sha256 -extensions v3_req -CA root.crt -CAkey root.key -CAserial root.srl -CAcreateserial -in server.req -out server.crt
